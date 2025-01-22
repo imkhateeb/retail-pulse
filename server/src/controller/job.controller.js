@@ -1,8 +1,8 @@
 const NotFoundError = require("../errors/notfound.error");
-const jobModel = require("../models/job.model");
+const JobModel = require("../models/job.model");
+const { sendToQueue } = require("../queue/queue");
 
 const { parseCSV } = require("../utils/csvParser");
-const { sendToQueue } = require("../utils/queue");
 
 let storeData = {};
 
@@ -33,7 +33,7 @@ const submitJob = async (req, res) => {
     };
   });
 
-  const job = new jobModel({ jobId, count, visits: enrichedVisits });
+  const job = new JobModel({ jobId, count, visits: enrichedVisits });
   await job.save();
 
   sendToQueue({ jobId, visits: enrichedVisits });
@@ -50,9 +50,9 @@ const getJob = async (req, res, next) => {
   const { jobId } = req.params;
 
   try {
-    const job = await jobModel.findOne({ jobId });
+    const job = await JobModel.findOne({ jobId });
     if (!job) {
-      throw new NotFoundError(jobModel, jobId);
+      throw new NotFoundError(JobModel, jobId);
     }
 
     res.status(200).json({

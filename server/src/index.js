@@ -4,18 +4,17 @@ const { Server } = require("socket.io");
 const bodyParser = require("body-parser");
 const apiRouter = require("./routes/api.router");
 const errorHandler = require("./utils/errorHandler");
-const { connectQueue } = require("./utils/queue");
 const connectToDB = require("./config/db.config");
 const NotFoundError = require("./errors/notfound.error");
 const { PORT } = require("./config/server.config");
+const { connectQueue, consumeQueue } = require("./queue/queue");
+const processJob = require("./queue/processJob");
 require("dotenv").config();
 
+// Express App
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-
-// Initialize RabbitMQ
-connectQueue();
 
 // Parsing Middleware
 app.use(bodyParser.json());
@@ -47,5 +46,20 @@ io.on("connection", (socket) => {
 // Start Server
 server.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+
+  // Initializing database
   await connectToDB();
+
+  // Initializing RabbitMQ
+  await connectQueue();
+
+  consumeQueue(async (data) => {
+    console.log("JOB RECEIVED:", data);
+    await processJob(data);
+  });
 });
+
+module.exports = {
+  server,
+  io,
+};

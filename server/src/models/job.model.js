@@ -15,10 +15,10 @@ const jobSchema = new mongoose.Schema(
         storeName: { type: String, required: true },
         areaCode: { type: String, required: true },
         image_url: { type: [String], required: true },
-        visit_time: { type: Date, required: true },
+        visit_time: { type: Date, default: new Date() },
       },
     ],
-    errors: { type: Array, default: [] },
+    jobErrors: { type: Array, default: [] },
   },
   { timestamps: true }
 );

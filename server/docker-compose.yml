@@ -1,5 +1,19 @@
 version: "3.8"
 services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     build:
       context: .
@@ -9,19 +23,12 @@ services:
     volumes:
       - .:/usr/src/app
     environment:
-      - NODE_ENV=development
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USER=guest
-      - RABBITMQ_PASSWORD=guest
+      NODE_ENV: development
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USER: guest
+      RABBITMQ_PASSWORD: guest
     depends_on:
       - rabbitmq
-
-  rabbitmq:
-    image: rabbitmq:3-management # From Docker Hub
-    ports:
-      - "5672:5672" # RabbitMQ broker port
-      - "15672:15672" # RabbitMQ management console port
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+    entrypoint:
+      ["/usr/src/app/wait-for-it.sh", "rabbitmq:5672", "--", "npm", "start"]
