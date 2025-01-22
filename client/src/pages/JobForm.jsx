@@ -1,8 +1,13 @@
 import { Plus, Trash } from "@phosphor-icons/react";
 import { useState } from "react";
 import errorToast from "../components/toasters/error-toast";
+import useAxios from "../hooks/useAxios";
 
 const JobForm = () => {
+  // custom hooks
+  const { loading, error, data, sendRequest } = useAxios(
+    "http://localhost:3000/"
+  );
   // Initial state for visits
   const [visits, setVisits] = useState([
     {
@@ -55,8 +60,46 @@ const JobForm = () => {
     setVisits(newVisits);
   };
 
+  // validation on visits
+  const validateVisits = () => {
+    visits.forEach((visit, index) => {
+      if (!visit.store_id) {
+        errorToast(`Store ID is required for visit ${index + 1}`);
+        return false;
+      }
+      if (!visit.image_url.length) {
+        errorToast(`At least one image URL is required for visit ${index + 1}`);
+        return false;
+      }
+      visit.image_url.forEach((url) => {
+        if (!url) {
+          errorToast(`Image URL is required for visit ${index + 1}`);
+          return false;
+        }
+      });
+    });
+
+    return true;
+  };
+
   const handleSubmit = async () => {
-    console.log(visits);
+    if (!validateVisits()) return;
+    const newVisits = visits.map((visit) => ({
+      ...visit,
+      visit_time: new Date(),
+    }));
+
+    const body = {
+      count: newVisits.length,
+      visits: newVisits,
+    };
+    const response = await sendRequest({
+      method: "POST",
+      url: "api/submit",
+      data: body,
+    });
+    console.log(loading);
+    console.log(response);
   };
 
   return (
