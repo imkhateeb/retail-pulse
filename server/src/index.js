@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const apiRouter = require("./routes/api.router");
 const { PORT } = require("./config/server.config");
 const connectToDB = require("./config/db.config");
+const NotFoundError = require("./errors/notfound.error");
 const app = express();
 require("dotenv").config();
 
@@ -14,6 +15,16 @@ app.use(bodyParser.text());
 
 // Routes
 app.use("/api", apiRouter);
+
+// Random Routes
+app.get("*", (req, res, next) => {
+  const ipAdd = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  try {
+    throw new NotFoundError(req.originalUrl, ipAdd);
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Registering Global Error Handler
 app.use(errorHandler);
