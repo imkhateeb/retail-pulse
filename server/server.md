@@ -25,6 +25,8 @@ This project is a Node.js-based microservice designed to process images collecte
 - **Node.js**: Backend framework.
 - **Express.js**: API framework.
 - **MongoDB**: To store processed data.
+- **RabbitMQ**: For asynchronous operation.
+- **Socket.Io**: For real-time image processing feedback.
 - **Axios**: HTTP client for downloading images.
 - **Sharp**: For image processing.
 - **Docker**: Containerization.
@@ -110,3 +112,4 @@ This project is a Node.js-based microservice designed to process images collecte
 1. **Retry Mechanism**: Retry image downloads on failure before marking the job as failed.
 2. **Notifications**: Integrate notifications to notify users when the job completes.
 3. **Cache Results**: Cache results in Redis for faster retrieval.
+4. **Better UI/UX**: Current UI/UX is built in much hurry and it has a lot's of improvement needed.
