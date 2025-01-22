@@ -1,13 +1,14 @@
 import { Plus, Trash } from "@phosphor-icons/react";
 import { useState } from "react";
 import errorToast from "../components/toasters/error-toast";
-import useAxios from "../hooks/useAxios";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import successToast from "../components/toasters/success-toast";
+import Loader from "../components/loaders/Loader";
 
 const JobForm = () => {
-  // custom hooks
-  const { loading, error, data, sendRequest } = useAxios(
-    "http://localhost:3000/"
-  );
+  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
   // Initial state for visits
   const [visits, setVisits] = useState([
     {
@@ -86,21 +87,33 @@ const JobForm = () => {
     if (!validateVisits()) return;
     const newVisits = visits.map((visit) => ({
       ...visit,
-      visit_time: new Date(),
+      visit_time: new Date().toUTCString(),
     }));
 
     const body = {
       count: newVisits.length,
       visits: newVisits,
     };
-    const response = await sendRequest({
-      method: "POST",
-      url: "api/submit",
-      data: body,
-    });
-    console.log(loading);
-    console.log(response);
+
+    const url = "http://localhost:3000/api/submit";
+    setSubmitting(true);
+    try {
+      const { data } = await axios.post(url, body);
+      if (data?.status === "success") {
+        successToast("Job submitted successfully");
+        navigate("/jobs");
+      }
+    } catch (error) {
+      errorToast("Something went wrong, please try again later");
+      console.log(error);
+    } finally {
+      setSubmitting(false);
+    }
   };
+
+  if (submitting) {
+    return <Loader text={"Submitting..."} />;
+  }
 
   return (
     <div className="w-full h-full items-center justify-center flex">

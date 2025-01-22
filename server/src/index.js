@@ -9,6 +9,7 @@ const NotFoundError = require("./errors/notfound.error");
 const { PORT } = require("./config/server.config");
 const { connectQueue, consumeQueue } = require("./queue/queue");
 const processJob = require("./queue/processJob");
+const cors = require("cors");
 require("dotenv").config();
 
 // Express App
@@ -20,6 +21,13 @@ const io = new Server(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.text());
+
+// Or enable CORS for specific origins
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with your frontend URL
+  })
+);
 
 // Routes
 app.use("/api", apiRouter);
