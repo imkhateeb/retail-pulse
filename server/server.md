@@ -48,7 +48,7 @@ This project is a Node.js-based microservice designed to process images collecte
 1. **Clone the Repository**:
    ```bash
    git clone <repository-url>
-   cd retail-pulse
+   cd retail-pulse/server
    ```
 2. **Install Dependencies**:
    ```bash
