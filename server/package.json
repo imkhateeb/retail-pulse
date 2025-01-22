@@ -1,0 +1,27 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "docker:build": "docker build -t retail-pulse-service .",
+    "docker:run": "docker run -p 3000:3000 retail-pulse-service",
+    "docker:compose": "docker-compose up --build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
+    "joi": "^17.13.3",
+    "sharp": "^0.33.5",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9"
+  }
+}
