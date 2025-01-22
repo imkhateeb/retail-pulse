@@ -1,0 +1,93 @@
+/* Ripple Effect */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+}
+
+.ripple-effect:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+
+/* Shrink Effect */
+.shrink-effect {
+  transition: transform 0.2s ease;
+}
+
+.shrink-effect:active {
+  transform: scale(0.95);
+}
+
+/* Glow Effect */
+.glow-effect {
+  position: relative;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-effect:active {
+  box-shadow: 0 0 20px rgba(52, 152, 219, 0.7);
+}
+
+/* Press-In Effect */
+.press-in-effect {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.press-in-effect:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Color Burst Effect */
+.color-burst-effect {
+  position: relative;
+  overflow: hidden;
+  background: #2ecc71;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.color-burst-effect::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+}
+
+.color-burst-effect:active::after {
+  width: 150px;
+  height: 150px;
+  opacity: 0;
+}
