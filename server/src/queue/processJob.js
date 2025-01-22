@@ -1,7 +1,6 @@
 const JobModel = require("../models/job.model");
 const axios = require("axios");
 const logger = require("../config/logger.config");
-const { io } = require("..");
 
 // Helper function to introduce a random delay
 const randomDelay = async () => {
@@ -9,7 +8,7 @@ const randomDelay = async () => {
   return new Promise((resolve) => setTimeout(resolve, delay));
 };
 
-const processJob = async (data) => {
+const processJob = async (data, io) => {
   const { jobId, visits } = data;
 
   try {
@@ -19,26 +18,39 @@ const processJob = async (data) => {
           const response = await axios.get(url, {
             responseType: "arraybuffer",
           });
-          // Processing of image
-          // const image = await sharp(response.data).metadata();
-          console.log(`Processed image for store ${visit.store_id}:`);
+
+          // Simulate image processing
+          console.log(`Processed image for store ${visit.store_id}: ${url}`);
           await randomDelay(); // Wait for a random delay
+
+          // Emit real-time update to the client
+          io.emit("imageProcessed", {
+            jobId,
+            storeId: visit.store_id,
+            imageUrl: url,
+            status: "processed",
+          });
         } catch (err) {
-          logger(`Error processing image for store ${visit.store_id}:`, err);
-          console.error(
+          logger.error(
             `Error processing image for store ${visit.store_id}:`,
             err
           );
+          io.emit("imageProcessed", {
+            jobId,
+            storeId: visit.store_id,
+            imageUrl: url,
+            status: "failed",
+          });
         }
       }
     }
 
     await JobModel.findOneAndUpdate({ jobId }, { status: "completed" });
-    // io.emit("jobUpdate", { jobId, status: "completed" });
+    io.emit("jobUpdate", { jobId, status: "completed" });
   } catch (err) {
     console.error(`Error processing job ${jobId}:`, err);
     await JobModel.findOneAndUpdate({ jobId }, { status: "failed" });
-    // io.emit("jobUpdate", { jobId, status: "failed" });
+    io.emit("jobUpdate", { jobId, status: "failed" });
   }
 };
 

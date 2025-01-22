@@ -15,7 +15,13 @@ require("dotenv").config();
 // Express App
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // Replace with your frontend URL
+    methods: ["GET", "POST"], // Allowed methods
+    credentials: true, // Allow cookies if needed
+  },
+});
 
 // Parsing Middleware
 app.use(bodyParser.json());
@@ -63,11 +69,6 @@ server.listen(PORT, async () => {
 
   consumeQueue(async (data) => {
     console.log("JOB RECEIVED:", data);
-    await processJob(data);
+    await processJob(data, io);
   });
 });
-
-module.exports = {
-  server,
-  io,
-};
