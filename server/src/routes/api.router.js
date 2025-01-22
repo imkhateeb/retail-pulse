@@ -1,4 +1,5 @@
 const express = require("express");
+const { submitJob, getJob } = require("../controller/job.controller");
 
 const apiRouter = express.Router();
 
@@ -10,5 +11,8 @@ apiRouter.get("/test", (req, res) => {
     error: {},
   });
 });
+
+apiRouter.post("/submit", submitJob);
+apiRouter.get("/status", getJob);
 
 module.exports = apiRouter;

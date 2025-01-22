@@ -4,6 +4,8 @@ const { StatusCodes } = require("http-status-codes");
 
 function errorHandler(err, req, res, next) {
   if (err instanceof BaseError) {
+    // This is for known errors
+    logger.error("An error occurred", err);
     return res.status(err.statusCode).json({
       status: "failure",
       message: err.message,
@@ -11,8 +13,6 @@ function errorHandler(err, req, res, next) {
       data: {},
     });
   }
-
-  console.log("REACHED HERE");
 
   // This is for unhandled errors
   logger.error("An unhandled error occurred", err);
