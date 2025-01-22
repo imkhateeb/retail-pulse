@@ -1,14 +1,24 @@
 const express = require("express");
+const errorHandler = require("./utils/errorHandler");
+const bodyParser = require("body-parser");
+const apiRouter = require("./routes/api.router");
+const { PORT } = require("./config/server.config");
+const connectToDB = require("./config/db.config");
 const app = express();
 require("dotenv").config();
 
-app.use(express.json());
+// Parsing Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text());
 
-app.get("/api/test", (req, res) => {
-  res.status(200).json({ message: "Setup works perfectly!" });
-});
+// Routes
+app.use("/api", apiRouter);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+// Registering Global Error Handler
+app.use(errorHandler);
+
+app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  await connectToDB();
 });
