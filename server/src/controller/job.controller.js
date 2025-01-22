@@ -28,8 +28,8 @@ const submitJob = async (req, res) => {
     const store = storeData[visit.store_id];
     return {
       ...visit,
-      storeName: store?.StoreName || "Unknown",
-      areaCode: store?.AreaCode || "Unknown",
+      storeName: store?.storeName || "Unknown",
+      areaCode: store?.areaCode || "Unknown",
     };
   });
 
@@ -47,8 +47,7 @@ const submitJob = async (req, res) => {
 };
 
 const getJob = async (req, res, next) => {
-  const { jobId } = req.params;
-
+  const { jobId } = req.query;
   try {
     const job = await JobModel.findOne({ jobId });
     if (!job) {
@@ -66,4 +65,18 @@ const getJob = async (req, res, next) => {
   }
 };
 
-module.exports = { submitJob, getJob };
+const getJobs = async (req, res, next) => {
+  try {
+    const jobs = await JobModel.find();
+    res.status(200).json({
+      status: "success",
+      message: "Jobs found",
+      data: { jobs },
+      error: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { submitJob, getJob, getJobs };
