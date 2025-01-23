@@ -1,6 +1,6 @@
 ### **Node.js Server Documentation**
 
-**Retail Pulse Image Processing Service - Serve**
+**Retail Pulse Image Processing Service - Server**
 
 ---
 
