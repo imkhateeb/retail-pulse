@@ -35,6 +35,7 @@ This project is a Node.js-based microservice designed to process images collecte
 - **Nodemon**: For development hot-reloading.
 - **dotenv**: For managing environment variables.
 - **csv-parser**: To parse CSV file data to JSON.
+- **express-rate-limit**: Middleware to control the rate of incoming API requests and prevent abuse or overloading of the server.
 
 ---
 
@@ -217,6 +218,7 @@ This project is a Node.js-based microservice designed to process images collecte
   - socket.io 4.x
   - mongoose 8.x
   - amqplib 0.10.x
+  - express-rate-limit 7.x
 
 ---
 

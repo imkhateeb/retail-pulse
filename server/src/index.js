@@ -10,6 +10,7 @@ const { PORT } = require("./config/server.config");
 const { connectQueue, consumeQueue } = require("./queue/queue");
 const processJob = require("./queue/processJob");
 const cors = require("cors");
+const rateLimiter = require("express-rate-limit");
 require("dotenv").config();
 
 // Express App
@@ -20,6 +21,21 @@ const io = new Server(server, {
     origin: "http://localhost:5173", // Replace with your frontend URL
     methods: ["GET", "POST"], // Allowed methods
     credentials: true, // Allow cookies if needed
+  },
+});
+
+// Rate Limiter
+const limiter = rateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 500,
+  message: {
+    status: "failure",
+    message:
+      "Too many requests from this IP, please try again after 15 minutes",
+    data: {},
+    error: {
+      msg: "Too many requests from this IP, please try again after 15 minutes",
+    },
   },
 });
 
@@ -36,7 +52,7 @@ app.use(
 );
 
 // Routes
-app.use("/api", apiRouter);
+app.use("/api", limiter, apiRouter);
 
 // Random Routes
 app.get("*", (req, res, next) => {
